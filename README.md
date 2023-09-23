@@ -14,5 +14,5 @@ from torch.nn import CosineSimilarity
 ### How to use? 🤔
 Install libraries
 ```pip install -r requirements.txt```
-Paste this prompt to terminal
+\nPaste this prompt to terminal
 ```python convert_tables.py <path-to-tableA> <path-to-tableB> <path-to-template-table>```
