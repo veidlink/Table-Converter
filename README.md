@@ -12,7 +12,8 @@ from transformers import AutoTokenizer, AutoModel
 from torch.nn import CosineSimilarity
 ```
 ### How to use? 🤔
-Install libraries
-```pip install -r requirements.txt```
-\nPaste this prompt to terminal
-```python convert_tables.py <path-to-tableA> <path-to-tableB> <path-to-template-table>```
+Paste this to terminal with specified paths
+```
+pip install -r requirements.txt
+python convert_tables.py <path-to-tableA> <path-to-tableB> <path-to-template-table>
+```
