@@ -1,5 +1,6 @@
 import sys
 import torch
+import openai
 import pandas as pd
 import numpy as np
 import re
@@ -105,25 +106,26 @@ B_table_final = pd.DataFrame(columns=template.columns)
 for tpl in resultsB:
     B_table_final[tpl[0]] = B[tpl[1]]
   
-def convert_dateA(date_str):
-    date_obj = datetime.strptime(date_str, '%m/%d/%Y')
-    return date_obj.strftime('%m.%d.%y')
+table_A = A_table_final
+table_B = B_table_final 
 
-def convert_dateB(date_str):
-    date_obj = datetime.strptime(date_str, '%Y-%m-%d')
-    return date_obj.strftime('%m.%d.%y')
+# Инициализация OpenAI API
+openai.api_key = sys.argv[4]
+prompt = f"Table A: {table_A.iloc[:5]}\n Table B: {table_B.iloc[:5]} \n Columns of table A and B have inconsistent data entry styles (dates, identificators, etc.). Write a python conversion function that transforms Table A so it matches Table B data entry style. As a response just return the function without any comments. Name this function 'convert_tableA_to_tableB'"
 
+completion = openai.Completion.create(
+    engine='gpt-3.5-turbo-instruct',
+    prompt=prompt,
+    max_tokens=1024,
+    n=1,
+    stop=None
+)
 
-def convert_policy_number(policy_number_str):
-    policy_number_str = policy_number_str.replace('-', '')
-    policy_number_str = re.sub('[^0-9a-zA-Z]+', '', policy_number_str)
-    return policy_number_str.upper()
+response = completion.choices[0].text 
 
-A_table_final['Date'] = A_table_final['Date'].apply(convert_dateA)
-B_table_final['Date'] = B_table_final['Date'].apply(convert_dateB)
-A_table_final['PolicyNumber'] = A_table_final['PolicyNumber'].apply(convert_policy_number)
-B_table_final['PolicyNumber'] = B_table_final['PolicyNumber'].apply(convert_policy_number)
+exec(response)
+table_A = convert_tableA_to_tableB(table_A)
 
 final_table = pd.concat([A_table_final, B_table_final], axis=0, ignore_index=True)
 final_table.to_csv('result.csv')
-print(final_table)
+print(final_table.head(20))
