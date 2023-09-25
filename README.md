@@ -4,6 +4,7 @@ This script uses a BERT model to find the most similar columns between tables A 
 ```
 import sys
 import torch
+import openai
 import pandas as pd
 import numpy as np
 import re
